@@ -1,8 +1,13 @@
 cmake_minimum_required(VERSION 3.20)
 
+#Thirdparty libs
+add_subdirectory("third_party/glfw")
+
 project(OpenGLAnimation)
 file(GLOB_RECURSE source_list source/*.cpp source/*.h)
 add_executable(OpenGLAnimation ${source_list})
+
+target_link_libraries(OpenGLAnimation PUBLIC GLFW)
 
 foreach(source IN LISTS source_list)
 #from source to relative path source_path
