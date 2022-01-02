@@ -1,6 +1,6 @@
 #pragma once
 
-const char* vertexShader = 
+const inline char* vertex_shader = 
     "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "void main()\n"
@@ -8,7 +8,7 @@ const char* vertexShader =
     "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
     "}\0";
 
-const char* fragmentShader =
+const inline char* fragment_shader =
     "#version 330 core\n"
     "out vec4 FragColor;\n"
     "\n"
@@ -16,3 +16,16 @@ const char* fragmentShader =
     "{\n"
     "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
     "}\n";
+
+struct ShaderProgram
+{
+    unsigned int id;
+
+    ShaderProgram(const char* vert, const char* frag);
+    ShaderProgram(ShaderProgram&&) noexcept;
+    ShaderProgram& operator=(ShaderProgram&&) noexcept;
+    ~ShaderProgram();
+
+    void bind();
+    void delete_program();
+};

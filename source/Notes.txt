@@ -1,0 +1,26 @@
+Basic requirements for rendering:
+-Vertex Array Object
+    -Vertex Buffer Object
+    -Attribute pointers
+    -Element Buffer Object
+
+-Shader Program
+    -Vertex Shader
+    -Fragment Shader
+
+-Transformation Matrices
+    -World matrix of object
+    -Inverse of camera matrix
+
+Extras
+-Textures (Requires VBO to have UV coordinates)
+    -Various textures passed as uniforms:
+        -Albedo
+        -Diffuse
+        -Others...
+
+-Lighting (Requires VBO normals and uniform materials to work effectively)
+    -Diffuse
+    -Ambient
+    -Spectral
+    -Others...

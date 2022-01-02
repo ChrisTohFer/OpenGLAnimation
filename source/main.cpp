@@ -38,38 +38,6 @@ struct VBO
     }
 };
 
-struct VShader
-{
-    unsigned int id;
-    VShader()
-    {
-        id = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(id, 1, &vertexShader, NULL);
-        glCompileShader(id);
-    }
-};
-struct FShader
-{
-    unsigned int id;
-    FShader()
-    {
-        id = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(id, 1, &fragmentShader, NULL);
-        glCompileShader(id);
-    }
-};
-struct ShaderProgram
-{
-    unsigned int id;
-    ShaderProgram(unsigned int v, unsigned int f)
-    {
-        id = glCreateProgram();
-        glAttachShader(id, v);
-        glAttachShader(id, f);
-        glLinkProgram(id);
-        glUseProgram(id);
-    }
-};
 struct VAO
 {
     unsigned int id;
@@ -86,9 +54,7 @@ void render()
 {
     //One time setup
     static VBO vbo;
-    static VShader vshade;
-    static FShader fshade;
-    static ShaderProgram program(vshade.id, fshade.id);
+    static ShaderProgram program(vertex_shader, fragment_shader);
     static VAO vao;
 
     //Clear
