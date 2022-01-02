@@ -1,4 +1,5 @@
 #include "shaders.h"
+#include "vertices.h"
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
@@ -23,39 +24,23 @@ void processInput(GLFWwindow* window)
         glfwSetWindowShouldClose(window, true);
 }
 
-struct VBO
-{
-    unsigned int id;
-    VBO() {
-        static constexpr float vertices[] = {
-            -0.5f, -0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-             0.0f,  0.5f, 0.0f
-        };
-        glGenBuffers(1, &id);
-        glBindBuffer(GL_ARRAY_BUFFER, id);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    }
-};
-
-struct VAO
-{
-    unsigned int id;
-    VAO()
-    {
-        glGenVertexArrays(1, &id);
-        glBindVertexArray(id);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-        glEnableVertexAttribArray(0);
-    }
-};
-
 void render()
 {
     //One time setup
-    static VBO vbo;
     static ShaderProgram program(vertex_shader, fragment_shader);
-    static VAO vao;
+    static VertexArrayObject vao(
+        {
+            -0.5f, -0.5f, 0.0f,
+             0.5f, -0.5f, 0.0f,
+             0.0f,  0.5f, 0.0f
+        },
+        3);
+    static bool first_time = true;
+    if (first_time)
+    {
+        first_time = false;
+        vao.add_vertex_attribute_pointer(0, 3, false, 0);
+    }
 
     //Clear
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
