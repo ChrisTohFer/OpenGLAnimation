@@ -12,6 +12,7 @@ add_subdirectory("third_party/glad")
 #Executable
 file(GLOB_RECURSE source_list source/*.*)
 add_executable(OpenGLAnimation ${source_list})
+target_include_directories(OpenGLAnimation PUBLIC "third_party/glm")
 
 #Linker
 target_link_libraries(OpenGLAnimation PUBLIC GLFW)
