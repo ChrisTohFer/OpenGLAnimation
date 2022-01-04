@@ -9,8 +9,9 @@ Basic requirements for rendering:
     -Fragment Shader
 
 -Transformation Matrices
-    -World matrix of object
-    -Inverse of camera matrix
+    -World Matrix       
+    -View Matrix        (Camera)
+    -Projection Matrix  (Camera)
 
 Extras
 -Textures (Requires VBO to have UV coordinates)
