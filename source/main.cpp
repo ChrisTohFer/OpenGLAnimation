@@ -4,11 +4,15 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <iostream>
+#include <thread>
 
 const static int size_x = 800;
 const static int size_y = 600;
+
+const static float timestep_ms = 15;
 
 //window callbacks
 
@@ -42,6 +46,19 @@ void render()
         first_time = false;
         vao.add_vertex_attribute_pointer(0, 3, false, 0);
     }
+
+    static float phase = 0.f;
+    phase += timestep_ms / 1000;
+    auto world_translate = glm::translate(glm::mat4(1.0f), glm::vec3(sinf(phase), sinf(phase), -3.f));
+    auto world_rotate = glm::rotate(glm::mat4(1.0f), sinf(phase), glm::vec3(0.f, 1.f, 0.f));
+    auto world = world_translate * world_rotate;
+
+    auto view_translate = glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 0.0f, -3.f));
+    auto view_rotate = glm::rotate(glm::mat4(1.0f), 0.15f * sinf(phase), glm::vec3(1.f, 0.f, 0.f));
+    auto view_perspective = glm::perspective(45.0f, 1.0f, 0.1f, 100.0f);
+    auto view = view_perspective * view_rotate * view_translate;
+    program.set_mat4("world", world);
+    program.set_mat4("view", view);
 
     //Clear
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -84,6 +101,9 @@ int main()
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+        using namespace std::chrono_literals;
+        std::this_thread::sleep_for(timestep_ms * 1ms);
     }
 
     glfwTerminate();

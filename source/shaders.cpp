@@ -1,6 +1,8 @@
 #include "shaders.h"
 
 #include "glad/glad.h"
+#include "glm/gtc/type_ptr.hpp"
+
 #include <iostream>
 
 ShaderProgram::ShaderProgram(const char* vert, const char* frag)
@@ -68,6 +70,13 @@ ShaderProgram::~ShaderProgram()
 {
     delete_program();
 }
+
+void ShaderProgram::set_mat4(const char* name, const glm::mat4& mat)
+{
+    auto location = glGetUniformLocation(id, name);
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
+}
+
 void ShaderProgram::bind()
 {
     glUseProgram(id);
