@@ -1,5 +1,5 @@
 #include "shaders.h"
-#include "vertices.h"
+#include "mesh.h"
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
@@ -7,12 +7,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <iostream>
+#include <chrono>
 #include <thread>
 
 const static int size_x = 800;
 const static int size_y = 600;
 
-const static float timestep_ms = 15;
+float delta_time = 0.15f;
 
 //window callbacks
 
@@ -33,22 +34,20 @@ void render()
 {
     //One time setup
     static ShaderProgram program(vertex_shader, fragment_shader);
-    static VertexArrayObject vao(
-        {
-            -0.5f, -0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-             0.0f,  0.5f, 0.0f
+    static Mesh mesh({
+        Vertex{glm::vec3{-0.5f, -0.5f, 0.0f}, glm::vec3{0.f, 0.f, 0.f}},
+        Vertex{glm::vec3{-0.5f,  0.5f, 0.0f}, glm::vec3{0.f, 0.f, 0.f}},
+        Vertex{glm::vec3{ 0.5f,  0.5f, 0.0f}, glm::vec3{0.f, 0.f, 0.f}},
+        Vertex{glm::vec3{ 0.5f, -0.5f, 0.0f}, glm::vec3{0.f, 0.f, 0.f}}
         },
-        3);
-    static bool first_time = true;
-    if (first_time)
-    {
-        first_time = false;
-        vao.add_vertex_attribute_pointer(0, 3, false, 0);
-    }
+        {
+            0, 3, 2,
+            0, 2, 1
+        });
 
     static float phase = 0.f;
-    phase += timestep_ms / 1000;
+    phase += delta_time;
+    std::cout << phase << "\n";
     auto world_translate = glm::translate(glm::mat4(1.0f), glm::vec3(sinf(phase), sinf(phase), -3.f));
     auto world_rotate = glm::rotate(glm::mat4(1.0f), sinf(phase), glm::vec3(0.f, 1.f, 0.f));
     auto world = world_translate * world_rotate;
@@ -65,7 +64,7 @@ void render()
     glClear(GL_COLOR_BUFFER_BIT);
 
     //Draw
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    mesh.draw();
 }
 
 int main()
@@ -95,6 +94,10 @@ int main()
 
     while (!glfwWindowShouldClose(window))
     {
+        using namespace std::chrono_literals;
+        using namespace std::chrono;
+        auto loop_start = system_clock::now();
+
         processInput(window);
 
         render();
@@ -102,8 +105,11 @@ int main()
         glfwSwapBuffers(window);
         glfwPollEvents();
 
-        using namespace std::chrono_literals;
-        std::this_thread::sleep_for(timestep_ms * 1ms);
+        std::this_thread::sleep_for(1ms);
+
+        auto loop_end = system_clock::now();
+        auto duration = loop_end - loop_start;
+        delta_time = duration_cast<microseconds>(duration).count() * 1e-6;
     }
 
     glfwTerminate();
