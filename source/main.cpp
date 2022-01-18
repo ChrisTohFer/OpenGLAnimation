@@ -1,5 +1,6 @@
 #include "shaders.h"
 #include "mesh.h"
+#include "model_import.h"
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
@@ -34,16 +35,18 @@ void render()
 {
     //One time setup
     static ShaderProgram program(vertex_shader, fragment_shader);
-    static Mesh mesh({
-        Vertex{glm::vec3{-0.5f, -0.5f, 0.0f}, glm::vec3{0.f, 0.f, 0.f}},
-        Vertex{glm::vec3{-0.5f,  0.5f, 0.0f}, glm::vec3{0.f, 0.f, 0.f}},
-        Vertex{glm::vec3{ 0.5f,  0.5f, 0.0f}, glm::vec3{0.f, 0.f, 0.f}},
-        Vertex{glm::vec3{ 0.5f, -0.5f, 0.0f}, glm::vec3{0.f, 0.f, 0.f}}
-        },
-        {
-            0, 3, 2,
-            0, 2, 1
-        });
+    static Mesh mesh = import_fbx("models/coffee_cup_fbx.fbx");
+
+    //static Mesh mesh({
+    //    Vertex{glm::vec3{-0.5f, -0.5f, 0.0f}, glm::vec3{0.f, 0.f, 0.f}},
+    //    Vertex{glm::vec3{-0.5f,  0.5f, 0.0f}, glm::vec3{0.f, 0.f, 0.f}},
+    //    Vertex{glm::vec3{ 0.5f,  0.5f, 0.0f}, glm::vec3{0.f, 0.f, 0.f}},
+    //    Vertex{glm::vec3{ 0.5f, -0.5f, 0.0f}, glm::vec3{0.f, 0.f, 0.f}}
+    //    },
+    //    {
+    //        0, 3, 2,
+    //        0, 2, 1
+    //    });
 
     static float phase = 0.f;
     phase += delta_time;
@@ -109,7 +112,7 @@ int main()
 
         auto loop_end = system_clock::now();
         auto duration = loop_end - loop_start;
-        delta_time = duration_cast<microseconds>(duration).count() * 1e-6;
+        delta_time = duration_cast<microseconds>(duration).count() * 1e-6f;
     }
 
     glfwTerminate();
